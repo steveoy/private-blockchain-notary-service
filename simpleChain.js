@@ -4,7 +4,7 @@
 
 
 const SHA256 = require('crypto-js/sha256');
-const levelDB = require('./levelDB_module');
+const levelDB = require('./levelDB_module')('chaindata');
 /* ===== Block Class ==============================
 |  Class with a constructor for block 			   |
 |  ===============================================*/

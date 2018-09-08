@@ -1,2 +1,4 @@
 chaindata/
 node_modules/
+.vscode
+validationdata/
