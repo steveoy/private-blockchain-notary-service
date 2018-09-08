@@ -1,0 +1,19 @@
+{
+  "name": "private-blockchain-notary-service",
+  "version": "1.0.0",
+  "description": "Notarizing ownership of digital assets by building a Star Registry",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "crypto-js": "^3.1.9-1",
+    "express": "^4.16.3",
+    "level": "^4.0.0"
+  },
+  "devDependencies": {
+    "jshint": "^2.9.6"
+  }
+}
