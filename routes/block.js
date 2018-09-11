@@ -1,11 +1,12 @@
 const Joi = require('joi');
 const simpleChain = require('../simpleChain');
+const utils = require('../utils');
 const express = require('express');
 const router = express.Router();
-const validation_array = require('./validation').validation_array;
 
 const Block = simpleChain.Block;
 const blockchain = new simpleChain.Blockchain();
+
 
 //Step 2: Configure Star Registration Endpoint
 router.post('/', (req, res) => {
@@ -18,20 +19,25 @@ router.post('/', (req, res) => {
         return;
     }
 
-    blockchain.addBlock(new Block(req.body.body)).then(result => {
-        if (result == "success")
-            blockchain.getBlock(blockchain.blockHeight).then(block => {
-                res.send(block);
-            });
+
+    utils.IdentityValidator(req.path, req.body.address).then(() => {
+        blockchain.addBlock(new Block(req.body.body)).then(result => {
+            if (result == "success")
+                blockchain.getBlock(blockchain.blockHeight).then(block => {
+                    res.send(block);
+                });
+        }).catch(err => {
+            console.log(err);
+        });
     }).catch(err => {
-        console.log(err);
+        return res.status(400).send(err + ".");
     });
+
 });
 
 
 //Step 3: Configure Star Lookup
 router.get('/:blockHeight', (req, res) => {
-    console.log(validation_array);
 
     const schema = {
         blockHeight: Joi.number().integer().min(0).max(blockchain.blockHeight).required()

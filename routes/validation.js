@@ -1,6 +1,5 @@
 const Joi = require('joi');
 const levelDB = require('../levelDB_module')('validationdata');
-const bitcoin = require('bitcoinjs-lib');
 const bitcoinMessage = require('bitcoinjs-message');
 const express = require('express');
 const router = express.Router();
@@ -22,16 +21,24 @@ router.post('/requestValidation', (req, res) => {
     const walletAddress = req.body.address;
     const currentTimeStamp = new Date().getTime().toString().slice(0, -3);
     levelDB._getLevelDBData(walletAddress).then(responseMessage => {
-        const responseMessageObject = JSON.parse(responseMessage);
-        const validationWindow = 300 - (currentTimeStamp - responseMessageObject.timeStamp);
+        let responseMessageObject = JSON.parse(responseMessage);
+        
+        const registerStar = responseMessageObject.registerStar;
+        if (registerStar !== undefined)
+            if (registerStar)
+                return res.status(400).send("Identity is already valid!, please navigate to /block for star registration");
+            else
+                responseMessageObject = responseMessageObject.status;
+
+        const validationWindow = 300 - (currentTimeStamp - responseMessageObject.requestTimeStamp);
         if (validationWindow <= 0) {
             levelDB._deleteLevelDBData(walletAddress);
             return res.status(400).send("Validation window is expired!. Please request validation again!");
         }
         else {
-            levelDB._deleteLevelDBData(walletAddress);
-            responseMessage = { "address": walletAddress, "requestTimeStamp": responseMessageObject.timeStamp, "message": responseMessageObject.message, "validationWindow": validationWindow };
-            levelDB._addLevelDBData(walletAddress, JSON.stringify(responseMessage)).then(result => {
+            responseMessage = { "address": walletAddress, "requestTimeStamp": responseMessageObject.requestTimeStamp, "message": responseMessageObject.message, "validationWindow": validationWindow };
+
+            levelDB._updateLevelDBData(walletAddress, JSON.stringify(responseMessage)).then(result => {
                 if (result === "success")
                     return res.send(responseMessage);
             });
@@ -65,9 +72,11 @@ router.post('/message-signature/validate', (req, res) => {
     const walletAddress = req.body.address;
     const messageSignature = req.body.signature;
 
+
     levelDB._getLevelDBData(walletAddress).then(responseMessage => {
         const responseMessageObject = JSON.parse(responseMessage);
-        const validationWindow = 300 - (currentTimeStamp - responseMessageObject.timeStamp);
+        const currentTimeStamp = new Date().getTime().toString().slice(0, -3);
+        const validationWindow = 300 - (currentTimeStamp - responseMessageObject.requestTimeStamp);
         if (validationWindow <= 0) {
             levelDB._deleteLevelDBData(walletAddress);
             return res.status(400).send("Validation window is expired!. Please request validation again!");
@@ -78,23 +87,25 @@ router.post('/message-signature/validate', (req, res) => {
                 "registerStar": result,
                 "status": {
                     "address": walletAddress,
-                    "requestTimeStamp": responseMessageObject.timeStamp,
+                    "requestTimeStamp": responseMessageObject.requestTimeStamp,
                     "message": responseMessageObject.message,
                     "validationWindow": validationWindow,
-                    "messageSignature": result == true ? "valid" : "invalid"
+                    "messageSignature": (result == true ? "valid" : "invalid")
                 }
-            }
-            if (!result) {
-                levelDB._deleteLevelDBData(walletAddress);
-                responseMessage = { "address": walletAddress, "requestTimeStamp": responseMessageObject.timeStamp, "message": responseMessageObject.message, "validationWindow": validationWindow };
-                levelDB._addLevelDBData(walletAddress, JSON.stringify(responseMessage)).catch(err => {
-                    console.log(err);
-                });
-            }
+            };
+            levelDB._updateLevelDBData(walletAddress, JSON.stringify(responseMessage)).catch(err => {
+                console.log(err);
+            });
             return res.status(200).send(response);
         }
     }).catch(err => {
-        return res.status(400).send(err);
+        if (err) {
+            if (err.notFound) {
+                return res.status(400).send("Please request validation using /requestValidation routine.");
+            }
+
+        }
+        return res.status(400).send(err.toString());
     });
 });
 
