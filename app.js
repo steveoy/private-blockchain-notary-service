@@ -9,8 +9,8 @@ app.use(express.json());
 app.use('', validation);
 app.use('/block', block);
 
-
-
+const routes = require('./routes/routes');
+routes.assignRoutes(app);
 
 //Step 2: Configure Star Registration Endpoint
 // POST /block
