@@ -27,7 +27,7 @@ Trying to follow good architecture concepts as the one proposed by Uncle Bob som
 
 ## Functionality and Testing
 
-#### Blockchain ID Validation Routine
+####1. Blockchain ID Validation Routine
 
 >**Validating User Request**
 ```bash
@@ -47,7 +47,7 @@ curl -X "POST" "http://localhost:8000/requestValidation" \
 }
 ```
 
-**Verifying User Message Signature**
+####2.Verifying User Message Signature
 
 >**Star Registration Endpoint Request**
 ```bash
@@ -80,7 +80,7 @@ curl -X "POST" "http://localhost:8000/block" \
 }
 ```
 
-#### Star Lookup
+####3. Star Lookup
 
 >**Lookup by Blockchain ID (Wallet Address)**
 ```bash
