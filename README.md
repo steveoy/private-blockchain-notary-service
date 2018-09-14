@@ -29,15 +29,19 @@ Trying to follow good architecture concepts as the one proposed by Uncle Bob som
 
 #### Blockchain ID Validation Routine
 
-**Validating User Request**
-| Request | Response |
-| ---------------------------------------------------------- | ----------- |
-| curl -X "POST" "http://localhost:8000/requestValidation" \ | {
-| -H 'Content-Type: application/json; charset=utf-8' \       |   "address": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ",
-|         -d $'{                                             |    "requestTimeStamp": "1532296090",
-|  "address": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ"           |    "message": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ:1532296090:starRegistry",
-|     }'                                                     |    "validationWindow": 300
-|                                                            |  }
+* **Validating User Request**
+Request  
+>
+```bash
+curl -X "POST" "http://localhost:8000/requestValidation" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{
+  "address": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ"
+}'
+```
+
+Response
+>
 
 **Verifying User Message Signature**
 
