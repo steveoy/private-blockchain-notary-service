@@ -24,6 +24,7 @@ $ node app.js
 ```
 ### Clean Architecture
 Trying to follow good architecture concepts as the one proposed by Uncle Bob some years ago, called Clean Architecture. It supports the idea of making the model independent from the framework, libraries, dbs…
+
 ![Clean Architecture](https://i.imgur.com/OVZdVMr.png)
 
 ## Functionality and Testing
