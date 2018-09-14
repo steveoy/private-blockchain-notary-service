@@ -32,14 +32,13 @@ Trying to follow good architecture concepts as the one proposed by Uncle Bob som
 * **Validating User Request**
 Request  
 >
-```bash
+```javascript
 curl -X "POST" "http://localhost:8000/requestValidation" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
   "address": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ"
 }'
 ```
-
 Response
 >
 
