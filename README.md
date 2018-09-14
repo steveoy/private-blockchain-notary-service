@@ -30,8 +30,6 @@ Trying to follow good architecture concepts as the one proposed by Uncle Bob som
 #### Blockchain ID Validation Routine
 
 >**Validating User Request**
->Request  
- 
 ```bash
 curl -X "POST" "http://localhost:8000/requestValidation" \
      -H 'Content-Type: application/json; charset=utf-8' \
@@ -39,7 +37,6 @@ curl -X "POST" "http://localhost:8000/requestValidation" \
   "address": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ"
   }'
 ```
-
 >Response
 ```JSON
 {
@@ -52,8 +49,7 @@ curl -X "POST" "http://localhost:8000/requestValidation" \
 
 **Verifying User Message Signature**
 
-#### Star Registration Endpoint
->Request
+>**Star Registration Endpoint Request**
 ```bash
 curl -X "POST" "http://localhost:8000/block" \
      -H 'Content-Type: application/json; charset=utf-8' \
@@ -86,8 +82,7 @@ curl -X "POST" "http://localhost:8000/block" \
 
 #### Star Lookup
 
-**Lookup by Blockchain ID (Wallet Address)**
->Request
+>**Lookup by Blockchain ID (Wallet Address)**
 ```bash
 curl "http://localhost:8000/stars/address:142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ"
 ```
@@ -111,8 +106,7 @@ curl "http://localhost:8000/stars/address:142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ"
   }
 ]
 ```
-**Lookup by Block Hash**
->Request
+>**Lookup by Block Hash**
 ```bash
 curl "http://localhost:8000/stars/hash:a59e9e399bc17c2db32a7a87379a8012f2c8e08dd661d7c0a6a4845d4f3ffb9f"
 ```
@@ -134,8 +128,7 @@ curl "http://localhost:8000/stars/hash:a59e9e399bc17c2db32a7a87379a8012f2c8e08dd
   "previousBlockHash": "49cce61ec3e6ae664514d5fa5722d86069cf981318fc303750ce66032d0acff3"
 }
 ```
-**Lookup by Block Height**
->Request
+>**Lookup by Block Height**
 ```bash
 curl "http://localhost:8000/block/1"
 ```
@@ -158,7 +151,6 @@ curl "http://localhost:8000/block/1"
 }
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
 
 ## Built With
 
