@@ -86,7 +86,7 @@ curl -X "POST" "http://localhost:8000/block" \
 
 >**Lookup by Blockchain ID (Wallet Address)**
 ```bash
-curl "http://localhost:8000/stars/address:142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ"
+curl "http://localhost:8000/stars/address/142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ"
 ```
 >Response
 ```JSON
@@ -110,7 +110,7 @@ curl "http://localhost:8000/stars/address:142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ"
 ```
 >**Lookup by Block Hash**
 ```bash
-curl "http://localhost:8000/stars/hash:a59e9e399bc17c2db32a7a87379a8012f2c8e08dd661d7c0a6a4845d4f3ffb9f"
+curl "http://localhost:8000/stars/hash/a59e9e399bc17c2db32a7a87379a8012f2c8e08dd661d7c0a6a4845d4f3ffb9f"
 ```
 >Response
 ```JSON
