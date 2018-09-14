@@ -17,7 +17,7 @@ The goal is to allow users to notarize star ownership using their blockchain ide
 ```bash
 $ npm install
 ```
-### Testing
+### Usage
 After installing please run app in terminal:
 ```bash
 $ node app.js
@@ -25,14 +25,14 @@ $ node app.js
 ### Clean Architecture
 Trying to follow good architecture concepts as the one proposed by Uncle Bob some years ago, called Clean Architecture. It supports the idea of making the model independent from the framework, libraries, dbs…
 
-### Functionality
+## Functionality and Testing
 
 #### Blockchain ID Validation Routine
 
-* **Validating User Request**
+>**Validating User Request**
 >Request  
  
-```PHP
+```bash
 curl -X "POST" "http://localhost:8000/requestValidation" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
@@ -53,17 +53,110 @@ curl -X "POST" "http://localhost:8000/requestValidation" \
 **Verifying User Message Signature**
 
 #### Star Registration Endpoint
-
-
+>Request
+```bash
+curl -X "POST" "http://localhost:8000/block" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{
+  "address": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ",
+  "star": {
+    "dec": "-26° 29' 24.9",
+    "ra": "16h 29m 1.0s",
+    "story": "Found star using https://www.google.com/sky/"
+  }
+}'
+```
+>Response
+```JSON
+{
+  "hash": "a59e9e399bc17c2db32a7a87379a8012f2c8e08dd661d7c0a6a4845d4f3ffb9f",
+  "height": 1,
+  "body": {
+    "address": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ",
+    "star": {
+      "ra": "16h 29m 1.0s",
+      "dec": "-26° 29' 24.9",
+      "story": "466f756e642073746172207573696e672068747470733a2f2f7777772e676f6f676c652e636f6d2f736b792f"
+    }
+  },
+  "time": "1532296234",
+  "previousBlockHash": "49cce61ec3e6ae664514d5fa5722d86069cf981318fc303750ce66032d0acff3"
+}
+```
 
 #### Star Lookup
 
 **Lookup by Blockchain ID (Wallet Address)**
-
+>Request
+```bash
+curl "http://localhost:8000/stars/address:142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ"
+```
+>Response
+```JSON
+[
+  {
+    "hash": "a59e9e399bc17c2db32a7a87379a8012f2c8e08dd661d7c0a6a4845d4f3ffb9f",
+    "height": 1,
+    "body": {
+      "address": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ",
+      "star": {
+        "ra": "16h 29m 1.0s",
+        "dec": "-26° 29' 24.9",
+        "story": "466f756e642073746172207573696e672068747470733a2f2f7777772e676f6f676c652e636f6d2f736b792f",
+        "storyDecoded": "Found star using https://www.google.com/sky/"
+      }
+    },
+    "time": "1532296234",
+    "previousBlockHash": "49cce61ec3e6ae664514d5fa5722d86069cf981318fc303750ce66032d0acff3"
+  }
+]
+```
 **Lookup by Block Hash**
-
+>Request
+```bash
+curl "http://localhost:8000/stars/hash:a59e9e399bc17c2db32a7a87379a8012f2c8e08dd661d7c0a6a4845d4f3ffb9f"
+```
+>Response
+```JSON
+{
+  "hash": "a59e9e399bc17c2db32a7a87379a8012f2c8e08dd661d7c0a6a4845d4f3ffb9f",
+  "height": 1,
+  "body": {
+    "address": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ",
+    "star": {
+      "ra": "16h 29m 1.0s",
+      "dec": "-26° 29' 24.9",
+      "story": "466f756e642073746172207573696e672068747470733a2f2f7777772e676f6f676c652e636f6d2f736b792f",
+      "storyDecoded": "Found star using https://www.google.com/sky/"
+    }
+  },
+  "time": "1532296234",
+  "previousBlockHash": "49cce61ec3e6ae664514d5fa5722d86069cf981318fc303750ce66032d0acff3"
+}
+```
 **Lookup by Block Height**
-
+>Request
+```bash
+curl "http://localhost:8000/block/1"
+```
+>Response
+```JSON
+{
+  "hash": "a59e9e399bc17c2db32a7a87379a8012f2c8e08dd661d7c0a6a4845d4f3ffb9f",
+  "height": 1,
+  "body": {
+    "address": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ",
+    "star": {
+      "ra": "16h 29m 1.0s",
+      "dec": "-26° 29' 24.9",
+      "story": "466f756e642073746172207573696e672068747470733a2f2f7777772e676f6f676c652e636f6d2f736b792f",
+      "storyDecoded": "Found star using https://www.google.com/sky/"
+    }
+  },
+  "time": "1532296234",
+  "previousBlockHash": "49cce61ec3e6ae664514d5fa5722d86069cf981318fc303750ce66032d0acff3"
+}
+```
 
 End with an example of getting some data out of the system or using it for a little demo
 
