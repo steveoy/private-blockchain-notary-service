@@ -1,30 +1,10 @@
 const express = require('express');
-const block = require('./routes/block');
-const validation = require('./routes/validation');
-const app = express();
-
-
-
-app.use(express.json());
-app.use('', validation);
-app.use('/block', block);
-
 const routes = require('./routes/routes');
-routes.assignRoutes(app);
+const app = express();
+ 
+app.set('json spaces', 2); // number of spaces for indentation
 
-//Step 2: Configure Star Registration Endpoint
-// POST /block
-// done in block.js
-
-
-//Step 3: Configure Star Lookup
-// GET /stars/address:[ADDRESS]
-
-// GET /stars/hash:[HASH]
-
-// GET /block/[HEIGHT]
-//done in block.js
-
-
+app.use(express.json()); 
+routes.assignRoutes(app); 
 
 app.listen(8000);

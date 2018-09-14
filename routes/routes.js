@@ -1,22 +1,25 @@
 var validation = require('./validation');
 
-var block = require('./block');
+var blocks = require('./blocks');
 
 var stars = require('./stars');
 
 
 exports.assignRoutes = function (app) {
+    
     app.post('/requestValidation', validation.requestValidation);
 
     app.post('/message-signature/validate', validation.messageSignatureValidation);
 
-    app.post('/block', block.addBlock);
+    app.post('/block', stars.registerStar);
 
-    app.get('/block/:blockHeight', block.getBlock);
+    app.get('/block/:blockHeight', blocks.getBlock);
 
 
-    app.post('/groups', groups.createGroup);
-    app.get('/groups/:groupId', groups.getGroup);
+    ///stars/address:[ADDRESS]
+    app.get('/stars/address/:ADDRESS', stars.getStarByOwnerAddress);
 
-    app.post('/graphQL', graphQL.getQuery);
+    //GET /stars/hash:[HASH]
+    app.get('/stars/hash/:HASH', stars.getStarByBlockHash);
+
 }

@@ -4,7 +4,8 @@
 
 
 const SHA256 = require('crypto-js/sha256');
-const levelDB = require('./levelDB_module')('chaindata');
+const levelDB = require('../db/levelDB_module')('chaindata', 'json');
+const jp = require('jsonpath');
 /* ===== Block Class ==============================
 |  Class with a constructor for block 			   |
 |  ===============================================*/
@@ -43,7 +44,6 @@ class Blockchain {
     });
   }
 
-
   //Empty Blockchain
   _deleteAllBlocks() {
     let i = 0;
@@ -72,12 +72,11 @@ class Blockchain {
       return new Promise((resolve, reject) => {
         $this.getBlock($this.blockHeight)
           .then(function (currentBlock) {
-            currentBlock = JSON.parse(currentBlock);
             newBlock.previousBlockHash = currentBlock.hash;
             newBlock.time = new Date().getTime().toString().slice(0, -3);
             newBlock.height = ++$this.blockHeight;
             newBlock.hash = SHA256(JSON.stringify(newBlock)).toString();
-            levelDB._addLevelDBData($this.blockHeight, JSON.stringify(newBlock)).then((result) => {
+            levelDB._addLevelDBData($this.blockHeight, newBlock).then((result) => {
               resolve(result);
             }).catch(err => console.log(err));
 
@@ -91,16 +90,50 @@ class Blockchain {
         newBlock.time = new Date().getTime().toString().slice(0, -3);
         newBlock.height = ++this.blockHeight;
         newBlock.hash = SHA256(JSON.stringify(newBlock)).toString();
-        levelDB._addLevelDBData(this.blockHeight, JSON.stringify(newBlock)).then((result) => {
+        levelDB._addLevelDBData(this.blockHeight, newBlock).then((result) => {
           resolve(result);
         }).catch(err => console.log(err));
-      }).catch(function (err) { console.log(err) });
+      }).catch(function (err) { console.log(err); });
     }
   }
 
   // Get Block by block height
   getBlock(blockHeight) {
     return levelDB._getLevelDBData(blockHeight);
+  }
+
+  //Get Blocks by body content
+  getBlocksByBodyContent(searchValue, pathExpression) {
+    let result = [];
+    return new Promise(function (resolve) {
+      levelDB.createReadStream()
+        .on('data', function (data) {
+          const jsonObject = data.value;
+          const val = jp.query(jsonObject, pathExpression);
+          if (val[0] === searchValue)
+            result.push(jsonObject);
+        }).on('close', function (err) {
+          resolve(result);
+        }).on('end', function (err) {
+        }).on('error', function (err) {
+          return console.log('Unable to read data stream!', err);
+        });
+    });
+  }
+
+  getBlockByHash(hash) {
+    return new Promise(function (resolve) {
+      levelDB.createReadStream()
+        .on('data', function (data) {
+          const jsonObject = data.value;
+          if (jsonObject.hash === hash)
+            resolve(jsonObject);
+        }).on('close', function (err) {
+        }).on('end', function (err) {
+        }).on('error', function (err) {
+          return console.log('Unable to read data stream!', err);
+        });
+    });
   }
 
   // Get current block height 
@@ -126,7 +159,6 @@ class Blockchain {
     let block = this.getBlock(blockHeight);
     // get block hash
     return block.then(function (blockObject) {
-      blockObject = JSON.parse(blockObject);
       let blockHash = blockObject.hash;
       blockObject.hash = '';
       // generate block hash
@@ -161,8 +193,7 @@ class Blockchain {
           resolve($this.getBlock(data.key - 1));
         })
           .then(function (prevBlockObject) {
-            prevBlockObject = JSON.parse(prevBlockObject);
-            let currentBlock = JSON.parse(data.value);
+            let currentBlock = data.value;
             if (currentBlock.previousBlockHash !== prevBlockObject.hash)
               $this.errorLog.push(data.key);
           })
@@ -206,10 +237,9 @@ class Blockchain {
 
         $this.getBlock(inducedErrorBlocks[i])
           .then(function (resultBlock) {
-            resultBlock = JSON.parse(resultBlock);
             resultBlock.body = 'induced chain error';
             levelDB._deleteLevelDBData(inducedErrorBlocks[i]);
-            levelDB._addLevelDBData(inducedErrorBlocks[i], JSON.stringify(resultBlock));
+            levelDB._addLevelDBData(inducedErrorBlocks[i], resultBlock);
           })
           .then(function () {
             if (--i >= 0) theLoop($this, inducedErrorBlocks, i);

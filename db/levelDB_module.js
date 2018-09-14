@@ -31,21 +31,21 @@ module.exports = (function (db_folder, encoding = "utf-8") {
                 if (err)
                     return console.log('Error deleting Block #' + key, err);
             });
-        },
-
-        //Update Data
-        _updateLevelDBData: function (key, value) {
-            return new Promise((resolve, reject) => {
-                db.batch()
-                    .del(key)
-                    .put(key, value)
-                    .write(function (err) {
-                        if (err)
-                            reject(err);
-                        resolve("success");
-                    });
-            });
         }
+        // ,
+        // //Update Data
+        // _updateLevelDBData: function (key, value) {
+        //     return new Promise((resolve, reject) => {
+        //         db.batch()
+        //             .del(key)
+        //             .put(key, value)
+        //             .write(function (err) {
+        //                 if (err)
+        //                     reject(err);
+        //                 resolve("success");
+        //             });
+        //     });
+        // }
     };
 
     return levelDB;
