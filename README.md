@@ -30,17 +30,25 @@ Trying to follow good architecture concepts as the one proposed by Uncle Bob som
 #### Blockchain ID Validation Routine
 
 * **Validating User Request**
-Request  
->
-```javascript
+>Request  
+ 
+```PHP
 curl -X "POST" "http://localhost:8000/requestValidation" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
   "address": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ"
-}'
+  }'
 ```
-Response
->
+
+>Response
+```JSON
+{
+  "address": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ",
+  "requestTimeStamp": "1532296090",
+  "message": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ:1532296090:starRegistry",
+  "validationWindow": 300
+}
+```
 
 **Verifying User Message Signature**
 
