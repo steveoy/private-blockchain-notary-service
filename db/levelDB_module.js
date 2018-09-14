@@ -1,8 +1,4 @@
-<<<<<<< HEAD:levelDB_module.js
-module.exports = (function (db_folder) {
-=======
 module.exports = (function (db_folder, encoding = "utf-8") {
->>>>>>> clean-architecture:db/levelDB_module.js
     const level = require('level');
     const chainDB = "./" + db_folder;
     const db = level(chainDB, { valueEncoding: encoding });
@@ -48,20 +44,6 @@ module.exports = (function (db_folder, encoding = "utf-8") {
                     });
             });
         }
-        // ,
-        // //Update Data
-        // _updateLevelDBData: function (key, value) {
-        //     return new Promise((resolve, reject) => {
-        //         db.batch()
-        //             .del(key)
-        //             .put(key, value)
-        //             .write(function (err) {
-        //                 if (err)
-        //                     reject(err);
-        //                 resolve("success");
-        //             });
-        //     });
-        // }
     };
 
     return levelDB;
