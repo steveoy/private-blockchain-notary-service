@@ -1,4 +1,6 @@
+const service = require('../services/validation');
 const Joi = require('joi');
+<<<<<<< HEAD
 const levelDB = require('../levelDB_module')('validationdata');
 const bitcoinMessage = require('bitcoinjs-message');
 const express = require('express');
@@ -9,15 +11,19 @@ const router = express.Router();
 //Step 1: Configure Blockchain ID validation routine
 // POST /requestValidation routine
 router.post('/requestValidation', (req, res) => {
+=======
+>>>>>>> clean-architecture
 
+exports.requestValidation = function (req, res, next) {
     const schema = {
         address: Joi.string().required()
     }
 
     const { error } = Joi.validate(req.body, schema);
     if (error)
-        return res.status(400).send(error.details[0].message);
+        return res.status(400).json(error.details[0].message);
 
+<<<<<<< HEAD
     const walletAddress = req.body.address;
     const currentTimeStamp = new Date().getTime().toString().slice(0, -3);
     levelDB._getLevelDBData(walletAddress).then(responseMessage => {
@@ -44,34 +50,32 @@ router.post('/requestValidation', (req, res) => {
             });
         }
     }).catch(err => {
+=======
+    service.requestValidation(req.body.address)
+        .then(responseMessage => {
+            res.json(responseMessage);
+        })
+        .catch(err => {
+            res.status(400).json(err.toString());
+        });
+}
+>>>>>>> clean-architecture
 
-        if (err) {
-            if (err.notFound) {
-                const message = walletAddress + ":" + currentTimeStamp + ":starRegistry";
-                const responseMessage = { "address": walletAddress, "requestTimeStamp": currentTimeStamp, "message": message, "validationWindow": 300 };
-                levelDB._addLevelDBData(walletAddress, JSON.stringify(responseMessage));
-                return res.send(responseMessage);
-            }
 
-        }
-        return res.status(400).send("errrrrrrr: " + err);
-    });
-});
-// POST /message-signature/validate
-// bitcoin.address.toOutputScript(address, bitcoin.networks.bitcoin)
-router.post('/message-signature/validate', (req, res) => {
+exports.messageSignatureValidation = function (req, res, next) {
+    const requestPayload = req.body;
+
     const schema = {
         address: Joi.string().required(),
         signature: Joi.string().required()
     }
 
-    const { error } = Joi.validate(req.body, schema);
+    const { error } = Joi.validate(requestPayload, schema);
     if (error)
-        return res.status(400).send(error.details[0].message);
+        return res.status(400).json(error.details[0].message);
 
-    const walletAddress = req.body.address;
-    const messageSignature = req.body.signature;
 
+<<<<<<< HEAD
 
     levelDB._getLevelDBData(walletAddress).then(responseMessage => {
         const responseMessageObject = JSON.parse(responseMessage);
@@ -108,5 +112,14 @@ router.post('/message-signature/validate', (req, res) => {
         return res.status(400).send(err.toString());
     });
 });
+=======
+    service.messageSignatureValidation(requestPayload.address, requestPayload.signature)
+        .then(responseMessage => {
+            res.json(responseMessage);
+        })
+        .catch(err => {
+            res.status(400).json(err);
+        });
+}
+>>>>>>> clean-architecture
 
-module.exports = router;
