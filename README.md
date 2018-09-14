@@ -48,10 +48,32 @@ curl -X "POST" "http://localhost:8000/requestValidation" \
   "validationWindow": 300
 }
 ```
+>**Verifying User Message Signature**
+```bash
+curl -X "POST" "http://localhost:8000/message-signature/validate" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{
+  "address": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ",
+  "signature": "H6ZrGrF0Y4rMGBMRT2+hHWGbThTIyhBS0dNKQRov9Yg6GgXcHxtO9GJN4nwD2yNXpnXHTWU9i+qdw5vpsooryLU="
+}'
+```
+>Response
+```JSON
+{
+  "registerStar": true,
+  "status": {
+    "address": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ",
+    "requestTimeStamp": "1532296090",
+    "message": "142BDCeSGbXjWKaAnYXbMpZ6sbrSAo3DpZ:1532296090:starRegistry",
+    "validationWindow": 193,
+    "messageSignature": "valid"
+  }
+}
+```
 
-#### 2.Verifying User Message Signature
+#### 2. Star Registration Endpoint
 
->**Star Registration Endpoint Request**
+>**Request Star Register**
 ```bash
 curl -X "POST" "http://localhost:8000/block" \
      -H 'Content-Type: application/json; charset=utf-8' \
